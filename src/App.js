@@ -162,7 +162,7 @@ class App extends Component {
                   <a className="card">
                     {Object.keys(item).map(function (key) {
                       return (
-						  (<div><h6 className="room-detail">{key}</h6><span>{item[key]}</span></div>)
+						  (<div><h6 className="room-detail">{key}</h6><span className="room-response">{item[key]}</span></div>)
                       )
                   }
                   )}
