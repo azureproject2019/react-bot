@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import './App.css';
 class App extends Component {
@@ -8,9 +9,7 @@ class App extends Component {
       userMessage: '',
 	  conversation: []
     };
-
   }
-
 
 
 
@@ -130,9 +129,11 @@ class App extends Component {
     return true;
 }
 
-  getContent(event) {
+  getContent(event, className, i) {
     if(event.user === 'human') {
-      return event.text;
+      return (<div key={`${className}-${i}`} className={`${className} chat-bubble`}>
+        <span className="chat-content">{event.text}</span>
+      </div>);
     } else {
       //let convertedstr=hparse(event.text.trim());
      if(this.isJson(event.text)) {
@@ -153,18 +154,26 @@ class App extends Component {
             </div>
         );
      } else {
-       return event.text;
+       return (<div key={`${className}-${i}`} className={`${className} chat-bubble`}>
+         <span className="chat-content">{event.text}</span>
+       </div>);
      }
     }
   }
 
+  sendEmail(conversation, publisher) {
+
+    //ReactDOM.findDOMNode().innerHTML
+    const message = { channelType: 'email', message: conversation, subject: 'Chat History' };
+    console.log(JSON.stringify(message));
+    publisher.send(JSON.stringify(message));
+  }
   render() {
 
     const ChatBubble = (event, i, className) => {
       return (
-       <div key={`${className}-${i}`} className={`${className} chat-bubble`}>
-          <span className="chat-content">{this.getContent(event)}</span>
-        </div>
+          <div>{this.getContent(event, className, i)}</div>
+
       );
     };
 
@@ -177,11 +186,11 @@ class App extends Component {
           <div className="chat-window">
             <div className="chat-heading">
               <h1 className="animate-chat">React Chatbot</h1>
-              <img className="mail-box" src={mailIcon} title="Send Convo"/>
+              <img className="mail-box" onClick={() => this.sendEmail(this.state.conversation, this.publishSocket)} src={mailIcon} title="Send Convo"/>
             </div>
             <ScrollToBottom className="conversation-view ">
 
-              <p>{chat}</p>
+              <p  id={'chathistory'}>{chat}</p>
               {/* {
    "room___roomId": 12682,
    "room___roomTypeId": 1001,
