@@ -398,7 +398,7 @@ input[placeholder]{
 .card {
   padding: 20px;
   margin: 10px 10px;
-  min-width: 310px;
+  min-width: 350px;
   max-width: 410px;
   height: 100%;
   display: inline-block;
@@ -420,12 +420,21 @@ input[placeholder]{
 } */
 
 .room-detail{
-  font-size: 14px;
-  line-height: 1.6;
+    display: inline-flex;
+    font-size: 14px;
+    line-height: 1.6;
+    min-width: 170px;
+    max-width: 170px;
+    flex-wrap: wrap;
+    overflow: auto;
+}
+.room-response{
+  display: inline;
+  margin-left: 5px;
 }
 
 .card:hover {
-  transform: scale(0.95, 0.95);
+  transform: scale(0.97, 0.97);
   box-shadow: 5px 5px 30px 15px rgba(0,0,0,0.25), 
     -5px -5px 30px 15px rgba(0,0,0,0.22);
 }

@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import ScrollToBottom from 'react-scroll-to-bottom';
+import SwipeableViews from 'react-swipeable-views';
+// import Container from 'react-bootstrap/Container';
+// import Row from 'react-bootstrap/Row';
+
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 class App extends Component {
   constructor(props) {
@@ -139,12 +144,25 @@ class App extends Component {
      if(this.isJson(event.text)) {
        const items=JSON.parse(event.text);
         return (
+          // <SwipeableViews enableMouseEvents className="card-container">
+          //     {items.map((item) =>
+          //         <a className="card">
+          //           {Object.keys(item).map(function (key) {
+          //             return (
+					// 	  (<h6 className="room-detail">{key}<span>{item[key]}</span></h6>)
+          //             )
+          //         }
+          //         )}
+          //         </a>
+          //     )
+          //     }
+          //   </SwipeableViews>
             <div className="card-container">
               {items.map((item) =>
                   <a className="card">
                     {Object.keys(item).map(function (key) {
                       return (
-						  (<h6 className="room-detail">{key}<span>{item[key]}</span></h6>)
+						  (<div><h6 className="room-detail">{key}</h6><span>{item[key]}</span></div>)
                       )
                   }
                   )}
