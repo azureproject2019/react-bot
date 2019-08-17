@@ -222,7 +222,7 @@ class App extends Component {
    "roomtype___roomType": "Deluxe",
    "roomtype___price": 3750
  } */}
-
+              
               {/*------------------------- loading indicator -----------*/}
               <div className="ticontainer">
                 <div className="tiblock">
