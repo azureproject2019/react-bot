@@ -5,9 +5,10 @@ import SwipeableViews from 'react-swipeable-views';
 // import Container from 'react-bootstrap/Container';
 // import Row from 'react-bootstrap/Row';
 
-// import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 class App extends Component {
+  
   constructor(props) {
     super(props);
     this.state = {
@@ -199,13 +200,26 @@ class App extends Component {
       ChatBubble(e, index, e.user)
     );
     const mailIcon=require('./icons8-send-mail-100.png');
+    const closeIcon=require('./error.png');
     return (
         <div>
           <div className="chat-window">
             <div className="chat-heading">
               <h1 className="animate-chat">React Chatbot</h1>
-              <img className="mail-box" onClick={() => this.sendEmail(this.state.conversation, this.publishSocket)} src={mailIcon} title="Send Convo"/>
-            </div>
+              {/* onClick={() => this.sendEmail(this.state.conversation, this.publishSocket)}  */}
+              <div className="interior">
+                <a href="#open-modal"><img className="mail-box" href="#open-model" src={mailIcon} title="Send Convo"/></a>
+              </div>      
+              <div id="open-modal" class="modal-window">
+                <div>
+                <a href="#" title="Close" class="modal-close"><img className="close-icon" src={closeIcon}/></a>
+                <form class="form">
+	              <input type="email" class="form__field" placeholder="Your E-Mail Address" />
+			          <button type="button" class="btn btn--primary btn--inside uppercase">Send</button>
+                </form>
+                </div>
+                </div>
+              </div>
             <ScrollToBottom className="conversation-view ">
 
               <p  id={'chathistory'}>{chat}</p>
