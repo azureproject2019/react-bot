@@ -201,21 +201,26 @@ class App extends Component {
     );
     const mailIcon=require('./icons8-send-mail-100.png');
     const closeIcon=require('./error.png');
+    const mailIdIcon=require('./icons8-send-mail-100 (1).png')
     return (
         <div>
           <div className="chat-window">
             <div className="chat-heading">
               <h1 className="animate-chat">React Chatbot</h1>
-              {/* onClick={() => this.sendEmail(this.state.conversation, this.publishSocket)}  */}
+              {/*   */}
               <div className="interior">
-                <a href="#open-modal"><img className="mail-box" href="#open-model" src={mailIcon} title="Send Convo"/></a>
-              </div>      
+                
+                <img className="mail-box" onClick={() => this.sendEmail(this.state.conversation, this.publishSocket)} src={mailIcon} title="Send Conversation"/>
+                <a  href="#open-modal"><img className="mailId-box" src={mailIdIcon} title="Enter Your Mail"/></a>
+              </div>
+                  
               <div id="open-modal" class="modal-window">
                 <div>
                 <a href="#" title="Close" class="modal-close"><img className="close-icon" src={closeIcon}/></a>
                 <form class="form">
 	              <input type="email" class="form__field" placeholder="Your E-Mail Address" />
 			          <button type="button" class="btn btn--primary btn--inside uppercase">Send</button>
+			          <button type="button" class="btn btn--danger btn--inside uppercase">Close</button>
                 </form>
                 </div>
                 </div>
