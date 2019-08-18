@@ -31,6 +31,11 @@ class App extends Component {
       console.log('connected')
     }
 
+    function isHTML(str) {
+      var doc = new DOMParser().parseFromString(str, "text/html");
+      return Array.from(doc.body.childNodes).some(node => node.nodeType === 1);
+    }
+
     this.listenSocket.onmessage = event => {
       // on receiving a message, add it to the list of messages
       let mockObj= JSON.stringify([ {
@@ -46,8 +51,16 @@ class App extends Component {
         "roomtype___roomType": "Deluxe",
         "roomtype___price": 3750
       } ]);
+
+      let message='';
+
+      if(isHTML(event.data.trim())) {
+        message='Some thing went wrong, please try again after some time.'
+      } else {
+        message=event.data.trim();
+      }
       const msg = {
-        text: event.data.trim(),
+        text: message,
         //text:mockObj,
         user: 'ai',
       };
@@ -183,7 +196,7 @@ class App extends Component {
   sendEmail(conversation, publisher) {
 
     //ReactDOM.findDOMNode().innerHTML
-    const message = { channelType: 'email', message: conversation, subject: 'Chat History' };
+    const message = { channelType: 'email', message: conversation, subject: 'Chat History', to:'lionelpannaisamy@gmail.com;tamilselvam.r@gmail.com;rk@softonics.in' };
     console.log(JSON.stringify(message));
     publisher.send(JSON.stringify(message));
   }
