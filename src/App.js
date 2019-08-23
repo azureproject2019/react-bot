@@ -78,7 +78,7 @@ class App extends Component {
 
   }
   startPublisherWebSocketClient() {
-    this.publishSocket = new WebSocket("wss://reactbot-nodered-flow.herokuapp.com//public/messagereceive");
+    this.publishSocket = new WebSocket("wss://reactbot-nodered-flow.herokuapp.com/public/messagereceive");
 
     this.publishSocket.onopen = () => {
       // on connecting, do nothing but log it to the console
