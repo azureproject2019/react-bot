@@ -67,13 +67,14 @@ class App extends Component {
       this.setState({
         conversation: [...this.state.conversation, msg],
       });
-      this.listenSocket.onclose = () => {
-        console.log('disconnected');
-        this.listenSocket=null;
-        // automatically try to reconnect on connection loss
-        //this.listenSocket =  new WebSocket("wss://azure2019.fred.sensetecnic.com/api/public/messagepublish");
-        this.startListenerWebSocketClient();
-      }
+    }
+
+    this.listenSocket.onclose = () => {
+      console.log('disconnected');
+      this.listenSocket=null;
+      // automatically try to reconnect on connection loss
+      //this.listenSocket =  new WebSocket("wss://azure2019.fred.sensetecnic.com/api/public/messagepublish");
+      this.startListenerWebSocketClient();
     }
 
   }
