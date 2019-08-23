@@ -1,0 +1,541 @@
+[
+  {
+    "id": "5b8035ac.675bac",
+    "type": "tab",
+    "label": "Websocket",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "d9af615f.90cdd",
+    "type": "websocket in",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "server": "f383a5ed.c689c8",
+    "client": "",
+    "x": 140,
+    "y": 80,
+    "wires": [
+      [
+        "aa59d89c.a357a8"
+      ]
+    ]
+  },
+  {
+    "id": "aa59d89c.a357a8",
+    "type": "json",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "property": "payload",
+    "action": "",
+    "pretty": false,
+    "x": 370,
+    "y": 80,
+    "wires": [
+      [
+        "e304a20b.a3301"
+      ]
+    ]
+  },
+  {
+    "id": "801519e8.471ec8",
+    "type": "change",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "rules": [
+      {
+        "t": "set",
+        "p": "data",
+        "pt": "msg",
+        "to": "payload",
+        "tot": "msg"
+      },
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "payload.msg",
+        "tot": "msg"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 340,
+    "y": 240,
+    "wires": [
+      [
+        "ac19e90c.fe60f8"
+      ]
+    ]
+  },
+  {
+    "id": "ac19e90c.fe60f8",
+    "type": "sentiment",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "property": "payload",
+    "x": 660,
+    "y": 320,
+    "wires": [
+      [
+        "5efccee6.81537"
+      ]
+    ]
+  },
+  {
+    "id": "5efccee6.81537",
+    "type": "function",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "func": "return {\n    payload: msg.data.message.message\n};",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 870,
+    "y": 340,
+    "wires": [
+      [
+        "391b46bd.e4678a"
+      ]
+    ]
+  },
+  {
+    "id": "78867115.4dd8c",
+    "type": "websocket out",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "server": "4bca77cd.e25768",
+    "client": "",
+    "x": 1430,
+    "y": 260,
+    "wires": []
+  },
+  {
+    "id": "c99351e0.0a66c",
+    "type": "websocket in",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "server": "3dd0130b.f56a1c",
+    "client": "",
+    "x": 260,
+    "y": 480,
+    "wires": [
+      [
+        "a628dc2e.d51fd"
+      ]
+    ]
+  },
+  {
+    "id": "a628dc2e.d51fd",
+    "type": "template",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "field": "payload",
+    "fieldType": "msg",
+    "format": "html",
+    "syntax": "mustache",
+    "template": "<!doctype html>\n<html lang=\"en\">\n<head>\n <meta charset=\"utf-8\">\n <title>FRED-powered chat app</title>\n <script src=\"https://code.jquery.com/jquery-1.11.3.min.js\"></script>\n <script src=\"https:///code.jquery.com/jquery-migrate-1.2.1.min.js\"></script>\n <style>\n #messages {border-color:#999; border-style:solid; width:250px; min-height:200px; margin:5px;}\n .msg {color:#FFF; background-color:#2980B9; padding:2px; margin:2px;}\n .server {color:#999; background-color:white; font-size:small;}\n .sentiment-3 {background-color:#992222;}\n .sentiment0 {background-color:#2980B9;}\n .sentiment3 {background-color:#229922;}\n #form {margin:5px;}\n #form input {width:250px;}\n </style>\n</head>\n<body>\n <div id=\"messages\"></div>\n <form id=\"form\" onsubmit=\"return false;\">\n <input id=\"text\" type=\"text\" onkeypress=\"return sendText(event)\" />\n </form>\n \n <script type=\"text/javascript\">\n \n // Open a websocket using FRED.\n var publishSocket = new WebSocket(\"wss://{yourusername}.fred.sensetecnic.com/api/public/messagereceive\");\n var listenSocket = new WebSocket(\"wss://{yourusername}.fred.sensetecnic.com/api/public/messagepublish\");\n \n listenSocket.onmessage = function (event) {\n // When receiving a message append a div child to #messages\n data = JSON.parse(event.data);\n $(\"#messages\").append(\"<div class='msg sentiment\"+data.sentiment+\"' >\"+data.timestamp+\" - \"+data.msg+\"</div>\")\n if ($(\"#messages\").children().length > 10 ) { $(\"#messages :first-child\").remove()}\n }\n \n listenSocket.onclose = function(event){\n $(\"#messages\").append(\"<div class='msg server'>Disconnected from server.</div>\");\n }\n \n listenSocket.onopen = function(event){\n $(\"#messages\").append(\"<div class='msg server'>Connected to server.</div>\")\n }\n \n function sendText(event) {\n // Only if return key pressed\n if (event.keyCode == 13) {\n // Construct object containing the data the server needs.\n d = new Date();\n var data = {\n msg: $(\"#text\").val(),\n timestamp: d.getHours() +\":\"+ d.getMinutes() + \":\" + d.getSeconds()\n };\n // Send the msg object as a JSON-formatted string.\n publishSocket.send(JSON.stringify(data));\n // Blank the text input element\n $(\"#text\").val(\"\");\n }\n }\n </script>\n \n</body>\n</html>",
+    "x": 460,
+    "y": 480,
+    "wires": [
+      [
+        "b84939b0.2cbe18"
+      ]
+    ]
+  },
+  {
+    "id": "b84939b0.2cbe18",
+    "type": "http response",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "statusCode": "",
+    "headers": {},
+    "x": 728.0000114440918,
+    "y": 493.00000762939453,
+    "wires": []
+  },
+  {
+    "id": "dfdc8d83.9af1a",
+    "type": "http request",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "method": "GET",
+    "ret": "obj",
+    "url": "http://95.216.241.112:8070/data?question={{question}}",
+    "tls": "",
+    "x": 1053.0000610351562,
+    "y": 212.00000286102295,
+    "wires": [
+      [
+        "78867115.4dd8c",
+        "8ad9ed71.0773e"
+      ]
+    ]
+  },
+  {
+    "id": "391b46bd.e4678a",
+    "type": "change",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "rules": [
+      {
+        "t": "set",
+        "p": "question",
+        "pt": "msg",
+        "to": "payload",
+        "tot": "msg"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 870,
+    "y": 220,
+    "wires": [
+      [
+        "dfdc8d83.9af1a"
+      ]
+    ]
+  },
+  {
+    "id": "e304a20b.a3301",
+    "type": "switch",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "property": "payload.channelType",
+    "propertyType": "msg",
+    "rules": [
+      {
+        "t": "eq",
+        "v": "chatbot",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "email",
+        "vt": "str"
+      }
+    ],
+    "checkall": "true",
+    "repair": false,
+    "outputs": 2,
+    "x": 90,
+    "y": 240,
+    "wires": [
+      [
+        "801519e8.471ec8"
+      ],
+      [
+        "f3cc4672.bc5388",
+        "93c5a694.209878"
+      ]
+    ]
+  },
+  {
+    "id": "93c5a694.209878",
+    "type": "debug",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "x": 390,
+    "y": 300,
+    "wires": []
+  },
+  {
+    "id": "59518a53.c81b84",
+    "type": "e-mail",
+    "z": "5b8035ac.675bac",
+    "server": "smtp.gmail.com",
+    "port": "465",
+    "secure": true,
+    "name": "",
+    "dname": "SendEmail",
+    "x": 350,
+    "y": 400,
+    "wires": []
+  },
+  {
+    "id": "f3cc4672.bc5388",
+    "type": "function",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "func": "var messagearr=msg.payload.message;\nvar body = '';\nfunction isJson(str) {\n    try {\n        JSON.parse(str);\n    } catch (e) {\n        return false;\n    }\n    return true;\n}\n\nfunction getJSONHTMLContent(conversationJson) {\n    let conversationhtml;\n            Object.keys(conversationJson).forEach(function(key) {\n                    conversationhtml=conversationhtml + \"<div>\" +key+ \":\" + conversationJson[key] + \"</div>\";\n            });\n            return conversationhtml;\n}\n\nif(messagearr.length>0) {\n    for(let i=0;i<messagearr.length;i++) {\n        let conversationItem=messagearr[i];\n        let isJson;\n        try {\n            JSON.parse(conversationItem['text']);\n            isJson=true;\n        } catch (e) {\n            isJson=false;\n        }\n        if(isJson) {\n            body=body + \"<div style=\\\"color:red;\\\">\" +conversationItem['user']+\"</div>\";\n            let conversationJson = JSON.parse(conversationItem['text']);\n            body = body + '<table style=\"width:100%; border:1px solid black; text-align: center\">';\n            let tableHeader = '';\n            let conversationhtml = '';\n            let foundTableHeader=false;\n            for (let i=0 ; i<conversationJson.length;i++) {\n                let item=conversationJson[i];\n                conversationhtml = conversationhtml + \"<tr>\";\n                Object.keys(item).forEach(function(key) {\n                    if(!foundTableHeader) {\n                        tableHeader = tableHeader + \"<th>\" + key + \"</th>\";\n                    }\n                    conversationhtml=conversationhtml + \"<td>\" + item[key] + \"</td>\";\n                });\n                conversationhtml = conversationhtml + \"</tr>\";\n                if(!foundTableHeader) {\n                    tableHeader = \"<tr>\" + tableHeader + \"</tr>\";\n                }\n                foundTableHeader=true;\n            }\n           \n            \n            conversationhtml = tableHeader + conversationhtml + \"</table>\";\n            body = body + conversationhtml;\n            \n        } else {\n            \n            body=body + \"<div><div style=\\\"min-width: 180px;display: inline-block;\\\">\" +conversationItem['user']+\"<span>:\" +conversationItem['text']+\"</span></div>\";\n        }\n    }\n}\n\n\nreturn {\n    payload: body,\n    topic: msg.payload.subject,\n    to: msg.payload.to\n    \n};",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 130,
+    "y": 340,
+    "wires": [
+      [
+        "59518a53.c81b84"
+      ]
+    ]
+  },
+  {
+    "id": "a12c7c17.c29e",
+    "type": "template",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "field": "payload",
+    "fieldType": "msg",
+    "format": "html",
+    "syntax": "mustache",
+    "template": "<!doctype html>\n<html lang=\"en\">\n<body>\n <div id=\"messages\">\n  <ul>\n  <li>Coffee</li>\n  <li>Tea</li>\n  <li>Milk</li>\n</ul>  \n </div>\n</body>\n</html>",
+    "x": 180,
+    "y": 420,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "ea387971.c69c18",
+    "type": "function",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "func": "msg.facebookevent = msg.messagingEvent; \n//msg.payload = 'Hello, this is all I say for now.'; \nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 250,
+    "y": 1440,
+    "wires": [
+      [
+        "b24ea789.4701e8"
+      ]
+    ]
+  },
+  {
+    "id": "faf29563.d278c8",
+    "type": "debug",
+    "z": "5b8035ac.675bac",
+    "name": "reply to facebook",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "x": 484,
+    "y": 1444,
+    "wires": []
+  },
+  {
+    "id": "a898bb70.fc25b8",
+    "type": "http response",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "statusCode": "",
+    "headers": {},
+    "x": 690,
+    "y": 880,
+    "wires": []
+  },
+  {
+    "id": "3572154b.36223a",
+    "type": "function",
+    "z": "5b8035ac.675bac",
+    "name": "subscribe",
+    "func": "var mode = ''; \nvar vtoken = '';\nvar challenge = '';\nif (msg.payload['hub.mode']) { mode = msg.payload['hub.mode']; } \nif (msg.payload['hub.verify_token'])\n{ \n    vtoken = msg.payload['hub.verify_token']; \n    \n}\nif (msg.payload['hub.challenge']) { \n    challenge = msg.payload['hub.challenge']; \n    \n} \nif ('subscribe' == mode && 'demoapp' == vtoken)\n{\n    msg.payload = challenge;\n    } \n\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 450.5,
+    "y": 836,
+    "wires": [
+      [
+        "a898bb70.fc25b8"
+      ]
+    ]
+  },
+  {
+    "id": "dcb7db19.379f78",
+    "type": "http in",
+    "z": "5b8035ac.675bac",
+    "name": "Messenger Verification Webhook",
+    "url": "/mybot",
+    "method": "get",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 191,
+    "y": 902,
+    "wires": [
+      [
+        "3572154b.36223a"
+      ]
+    ]
+  },
+  {
+    "id": "db2d281a.e306c8",
+    "type": "http in",
+    "z": "5b8035ac.675bac",
+    "name": "Messenger chat listener",
+    "url": "/mybot",
+    "method": "post",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 180,
+    "y": 1040,
+    "wires": [
+      [
+        "42bf8127.6bc0f",
+        "c2c1f87d.75c628"
+      ]
+    ]
+  },
+  {
+    "id": "42bf8127.6bc0f",
+    "type": "function",
+    "z": "5b8035ac.675bac",
+    "name": "listen",
+    "func": "if (msg.payload.object && 'page' == msg.payload.object) {\n    if (msg.payload.entry){\n        var entry = msg.payload.entry;\n        for (var i = 0; i < entry.length; i++) {\n            var pageID = entry[i].id; \n            var timeOfEvent = entry[i].time;\n            var messaging = entry[i].messaging;\n            for (var j =0; j < messaging.length; j++) { if (messaging[j].message) { msg.messagingEvent = messaging[j];\nnode.send([msg,null]);\n} } } } } \nreturn [null,msg];",
+    "outputs": 2,
+    "noerr": 0,
+    "x": 459.5,
+    "y": 1132,
+    "wires": [
+      [
+        "23f6b575.a4aa6a"
+      ],
+      [
+        "571c778e.e5cef8"
+      ]
+    ]
+  },
+  {
+    "id": "23f6b575.a4aa6a",
+    "type": "function",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "func": "msg.payload=msg.payload.entry[0].messaging[0].message.text\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 569.5,
+    "y": 1084,
+    "wires": [
+      [
+        "9210f4de.89f3d8"
+      ]
+    ]
+  },
+  {
+    "id": "9210f4de.89f3d8",
+    "type": "change",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "rules": [
+      {
+        "t": "set",
+        "p": "question",
+        "pt": "msg",
+        "to": "payload",
+        "tot": "msg"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 830,
+    "y": 1080,
+    "wires": [
+      [
+        "3e7f34e5.d136fc"
+      ]
+    ]
+  },
+  {
+    "id": "3e7f34e5.d136fc",
+    "type": "http request",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "method": "GET",
+    "ret": "txt",
+    "url": "http://95.216.241.112:8070/data?question={{question}}",
+    "tls": "",
+    "x": 570,
+    "y": 1340,
+    "wires": [
+      [
+        "ea387971.c69c18"
+      ]
+    ]
+  },
+  {
+    "id": "571c778e.e5cef8",
+    "type": "http response",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "statusCode": "",
+    "headers": {},
+    "x": 727,
+    "y": 1152,
+    "wires": []
+  },
+  {
+    "id": "b24ea789.4701e8",
+    "type": "facebook-messenger-writer",
+    "z": "5b8035ac.675bac",
+    "name": "demochatapp",
+    "x": 400,
+    "y": 1660,
+    "wires": [
+      [
+        "faf29563.d278c8"
+      ]
+    ]
+  },
+  {
+    "id": "c2c1f87d.75c628",
+    "type": "debug",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "true",
+    "x": 370,
+    "y": 970,
+    "wires": []
+  },
+  {
+    "id": "8ad9ed71.0773e",
+    "type": "debug",
+    "z": "5b8035ac.675bac",
+    "name": "",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "true",
+    "x": 1195.8999633789062,
+    "y": 141,
+    "wires": []
+  },
+  {
+    "id": "f383a5ed.c689c8",
+    "type": "websocket-listener",
+    "z": "5b8035ac.675bac",
+    "path": "/public/messagereceive",
+    "wholemsg": "false"
+  },
+  {
+    "id": "4bca77cd.e25768",
+    "type": "websocket-listener",
+    "z": "5b8035ac.675bac",
+    "path": "/public/messagepublish",
+    "wholemsg": "false"
+  },
+  {
+    "id": "3dd0130b.f56a1c",
+    "type": "websocket-listener",
+    "z": "5b8035ac.675bac",
+    "path": "/public/chatroom",
+    "wholemsg": "false"
+  }
+]
