@@ -10,7 +10,8 @@ class App extends Component {
     super(props);
     this.state = {
       userMessage: '',
-	  conversation: []
+	  conversation: [],
+      userId : new Date().getTime()
     };
   }
 
@@ -31,20 +32,20 @@ class App extends Component {
     }
 
     this.listenSocket.onmessage = event => {
-      let message='';
-
-      if(isHTML(event.data.trim())) {
-        message='Some thing went wrong, please try again after some time.'
-      } else {
-        message=event.data.trim();
+      let response=JSON.parse(event.data.trim());
+      if(response.userId === this.state.userId) {
+          let message=response.data;
+          if(isHTML(message)) {
+              message='Some thing went wrong, please try again after some time.'
+          }
+          const msg = {
+              text: message,
+              user: 'ai',
+          };
+          this.setState({
+              conversation: [...this.state.conversation, msg],
+          });
       }
-      const msg = {
-        text: message,
-        user: 'ai',
-      };
-      this.setState({
-        conversation: [...this.state.conversation, msg],
-      });
     }
 
     this.listenSocket.onclose = () => {
@@ -72,7 +73,7 @@ class App extends Component {
 
   }
   submitMessage = messageString => {
-    const message = { channelType: 'chatbot', message: messageString }
+    const message = { channelType: 'chatbot', message: messageString, userId: this.state.userId }
     this.publishSocket.send(JSON.stringify(message))
   }
   handleChange = event => {
@@ -144,6 +145,13 @@ class App extends Component {
     publisher.send(JSON.stringify(message));
   }
   render() {
+      const responseFacebook = (response) => {
+          console.log(response);
+      }
+
+      const responseGoogle = (response) => {
+          console.log(response);
+      }
     const ChatBubble = (event, i, className) => {
       return (
           <div>{this.getContent(event, className, i)}</div>
@@ -157,7 +165,9 @@ class App extends Component {
     const closeIcon=require('./error.png');
     const mailIdIcon=require('./icons8-send-mail-100 (1).png')
     return (
+
         <div>
+
           <div className="chat-window">
             <div className="chat-heading">
               <h1 className="animate-chat">React Chatbot</h1>
