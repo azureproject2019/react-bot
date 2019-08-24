@@ -39,7 +39,7 @@ class App extends Component {
               message='Some thing went wrong, please try again after some time.'
           }
           const msg = {
-              text: message,
+              text: JSON.stringify(message),
               user: 'ai',
           };
           this.setState({
