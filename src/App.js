@@ -31,6 +31,22 @@ class App extends Component {
       return Array.from(doc.body.childNodes).some(node => node.nodeType === 1);
     }
 
+    function convertToMessage(str) {
+      let convertedMessage='';
+      if(typeof str == 'string') {
+        convertedMessage=str;
+      } else {
+        try {
+          let tempstr=JSON.stringify(str);
+          JSON.parse(tempstr);
+          convertedMessage=tempstr;
+        } catch (e) {
+          convertedMessage=str;
+        }
+      }
+      return convertedMessage;
+    }
+
     this.listenSocket.onmessage = event => {
       let response=JSON.parse(event.data.trim());
       if(response.userId === this.state.userId) {
@@ -39,8 +55,8 @@ class App extends Component {
               message='Some thing went wrong, please try again after some time.'
           }
           const msg = {
-              text: JSON.stringify(message),
-              user: 'ai',
+              text: convertToMessage(message),
+              user: 'ai'
           };
           this.setState({
               conversation: [...this.state.conversation, msg],
