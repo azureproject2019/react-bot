@@ -11,7 +11,9 @@ class App extends Component {
     this.state = {
       userMessage: '',
 	  conversation: [],
-      userId : new Date().getTime()
+      userId : new Date().getTime(),
+      toEmailModalOpen : false,
+      toEmailAddress : ''
     };
   }
 
@@ -156,12 +158,21 @@ class App extends Component {
     }
   }
 
-  sendEmail(conversation, publisher) {
-    const message = { channelType: 'email', message: conversation, subject: 'Chat History', to:'lionelpannaisamy@gmail.com;tamilselvam.r@gmail.com;rk@softonics.in' };
+  sendEmail(conversation, publisher, toEmail) {
+    const message = { channelType: 'email', message: conversation, subject: 'Chat History', to:toEmail };
+    this.setState({toEmailModalOpen: false});
     publisher.send(JSON.stringify(message));
   }
+
+
   render() {
-      const responseFacebook = (response) => {
+    const handleEmailModalClick = (toEmailModalOpen) => {
+      this.setState({toEmailModalOpen: toEmailModalOpen, toEmailAddress : ''});
+    }
+    const handleToEmailAddressChange = event => {
+      this.setState({ toEmailAddress: event.target.value });
+    };
+    const responseFacebook = (response) => {
           console.log(response);
       }
 
@@ -188,20 +199,30 @@ class App extends Component {
             <div className="chat-heading">
               <h1 className="animate-chat">React Chatbot</h1>
               <div className="interior">
-                <img className="mail-box" onClick={() => this.sendEmail(this.state.conversation, this.publishSocket)} src={mailIcon} title="Send Conversation"/>
-                <a  href="#open-modal"><img className="mailId-box" src={mailIdIcon} title="Enter Your Mail"/></a>
-              </div>
-                  
-              <div id="open-modal" className="modal-window">
                 <div>
-                <a href="#" title="Close" className="modal-close"><img className="close-icon" src={closeIcon}/></a>
-                <form className="form">
-	              <input type="email" className="form__field" placeholder="Your E-Mail Address" />
-			          <button type="button" className="btn btn--primary btn--inside uppercase">Send</button>
-			          <button type="button" className="btn btn--danger btn--inside uppercase">Close</button>
-                </form>
+                  <img className="mailId-box" src={mailIdIcon} title="Enter Your Mail" onClick={() => handleEmailModalClick(true)} />
                 </div>
-                </div>
+              </div>
+
+              {this.state.toEmailModalOpen ? (
+                  <div id="open-modal" className="modal-window" >
+                    <div className="modal-window-div">
+                      <a href="#" title="Close" className="modal-close"><img className="close-icon" onClick={() => handleEmailModalClick(false)} src={closeIcon}/></a>
+                      <form className="form">
+                        <input type="text" className="form__field" placeholder="Your E-Mail Address" value={this.state.toEmailAddress}
+                               onInput={handleToEmailAddressChange}
+                                />
+
+
+                        <button type="button" onClick={() => this.sendEmail(this.state.conversation, this.publishSocket, this.state.toEmailAddress)} className="btn btn--primary btn--inside uppercase">Send</button>
+                        <button type="button" onClick={() => handleEmailModalClick(false)} className="btn btn--danger btn--inside uppercase">Close</button>
+                      </form>
+                    </div>
+                  </div>
+              ) : (
+                 ''
+              )}
+
               </div>
             <ScrollToBottom className="conversation-view ">
 
