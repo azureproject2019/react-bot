@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import SwipeableViews from 'react-swipeable-views';
 // import Container from 'react-bootstrap/Container';
@@ -13,11 +12,12 @@ class App extends Component {
     super(props);
     this.state = {
       userMessage: '',
-	    conversation: []
+	  conversation: [],
+      userId : new Date().getTime(),
+      toEmailModalOpen : false,
+      toEmailAddress : ''
     };
   }
-
-
 
   componentDidMount() {
     this.startListenerWebSocketClient();
@@ -25,10 +25,9 @@ class App extends Component {
   }
 
   startListenerWebSocketClient() {
-    this.listenSocket = new WebSocket("wss://azure2019.fred.sensetecnic.com/api/public/messagepublish"); //server publishes
+    this.listenSocket = new WebSocket("wss://reactbot-nodered-flow.herokuapp.com/public/messagepublish"); //server publishes
     this.listenSocket.onopen = () => {
       // on connecting, do nothing but log it to the console
-      console.log('connected')
     }
 
     function isHTML(str) {
@@ -36,75 +35,65 @@ class App extends Component {
       return Array.from(doc.body.childNodes).some(node => node.nodeType === 1);
     }
 
-    this.listenSocket.onmessage = event => {
-      // on receiving a message, add it to the list of messages
-      let mockObj= JSON.stringify([ {
-        "room___roomId": 12682,
-        "room___roomTypeId": 1001,
-        "room___hotelId": 3,
-        "room___booked": 0,
-        "hotel___hotelId": 3,
-        "hotel___name": "Joe Mcclure",
-        "hotel___city": "North Margaret",
-        "hotel___country": "Afghanistan",
-        "roomtype___roomTypeId": 1001,
-        "roomtype___roomType": "Deluxe",
-        "roomtype___price": 3750
-      } ]);
-
-      let message='';
-
-      if(isHTML(event.data.trim())) {
-        message='Some thing went wrong, please try again after some time.'
+    function convertToMessage(str) {
+      let convertedMessage='';
+      if(typeof str == 'string') {
+        convertedMessage=str;
       } else {
-        message=event.data.trim();
+        try {
+          let tempstr=JSON.stringify(str);
+          JSON.parse(tempstr);
+          convertedMessage=tempstr;
+        } catch (e) {
+          convertedMessage=str;
+        }
       }
-      const msg = {
-        text: message,
-        //text:mockObj,
-        user: 'ai',
-      };
-      this.setState({
-        conversation: [...this.state.conversation, msg],
-      });
-      this.listenSocket.onclose = () => {
-        console.log('disconnected');
-        this.listenSocket=null;
-        // automatically try to reconnect on connection loss
-        //this.listenSocket =  new WebSocket("wss://azure2019.fred.sensetecnic.com/api/public/messagepublish");
-        this.startListenerWebSocketClient();
+      return convertedMessage;
+    }
+
+    this.listenSocket.onmessage = event => {
+      let response=JSON.parse(event.data.trim());
+      if(response.userId === this.state.userId) {
+          let message=response.data;
+          if(isHTML(message)) {
+              message='Some thing went wrong, please try again after some time.'
+          }
+          const msg = {
+              text: convertToMessage(message),
+              user: 'ai'
+          };
+          this.setState({
+              conversation: [...this.state.conversation, msg],
+          });
       }
+    }
+
+    this.listenSocket.onclose = () => {
+      this.startListenerWebSocketClient();
     }
 
   }
   startPublisherWebSocketClient() {
-    this.publishSocket = new WebSocket("wss://azure2019.fred.sensetecnic.com/api/public/messagereceive");
+    this.publishSocket = new WebSocket("wss://reactbot-nodered-flow.herokuapp.com/public/messagereceive");
 
     this.publishSocket.onopen = () => {
       // on connecting, do nothing but log it to the console
-      console.log('connected')
     }
 
 
 
     this.publishSocket.onmessage = evt => {
-      // on receiving a message, add it to the list of messages
-      const message = JSON.parse(evt.data)
-      this.addMessage(message)
+      const message = JSON.parse(evt.data);
+      this.addMessage(message);
     }
 
     this.publishSocket.onclose = () => {
-      console.log('disconnected');
-      this.publishSocket=null;
-      // automatically try to reconnect on connection loss
-      //this.publishSocket =  new WebSocket("wss://azure2019.fred.sensetecnic.com/api/public/messagereceive");
       this.startPublisherWebSocketClient();
     }
 
   }
   submitMessage = messageString => {
-    // on submitting the ChatInput form, send the message, add it to the list and reset the input
-    const message = { channelType: 'chatbot', message: messageString }
+    const message = { channelType: 'chatbot', message: messageString, userId: this.state.userId }
     this.publishSocket.send(JSON.stringify(message))
   }
   handleChange = event => {
@@ -124,14 +113,6 @@ class App extends Component {
       conversation: [...this.state.conversation, msg],
     });
 
-    /*fetch('http://localhost:5000/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: this.state.userMessage,
-      }),
-    });*/
-
     this.submitMessage({
       message: this.state.userMessage,
     });
@@ -150,27 +131,13 @@ class App extends Component {
 
   getContent(event, className, i) {
     if(event.user === 'human') {
-      return (<div key={`${className}-${i}`} className={`${className} chat-bubble`}>
+      return (<div key={`${className}-${i+1}`} className={`${className} chat-bubble`}>
         <span className="chat-content">{event.text}</span>
       </div>);
     } else {
-      //let convertedstr=hparse(event.text.trim());
      if(this.isJson(event.text)) {
        const items=JSON.parse(event.text);
         return (
-          // <SwipeableViews enableMouseEvents className="card-container">
-          //     {items.map((item) =>
-          //         <a className="card">
-          //           {Object.keys(item).map(function (key) {
-          //             return (
-					// 	  (<h6 className="room-detail">{key}<span>{item[key]}</span></h6>)
-          //             )
-          //         }
-          //         )}
-          //         </a>
-          //     )
-          //     }
-          //   </SwipeableViews>
             <div className="card-container">
               {items.map((item) =>
                   <a className="card">
@@ -193,11 +160,9 @@ class App extends Component {
     }
   }
 
-  sendEmail(conversation, publisher) {
-
-    //ReactDOM.findDOMNode().innerHTML
-    const message = { channelType: 'email', message: conversation, subject: 'Chat History', to:'lionelpannaisamy@gmail.com;tamilselvam.r@gmail.com;rk@softonics.in' };
-    console.log(JSON.stringify(message));
+  sendEmail(conversation, publisher, toEmail) {
+    const message = { channelType: 'email', message: conversation, subject: 'Chat History', to:toEmail };
+    this.setState({toEmailModalOpen: false});
     publisher.send(JSON.stringify(message));
   }
   // editSlogan(){
@@ -207,11 +172,22 @@ class App extends Component {
   //   );
   // }
   render() {
+    const handleEmailModalClick = (toEmailModalOpen) => {
+      this.setState({toEmailModalOpen: toEmailModalOpen, toEmailAddress : ''});
+    }
+    const handleToEmailAddressChange = event => {
+      this.setState({ toEmailAddress: event.target.value });
+    };
+    const responseFacebook = (response) => {
+          console.log(response);
+      }
 
+      const responseGoogle = (response) => {
+          console.log(response);
+      }
     const ChatBubble = (event, i, className) => {
       return (
           <div>{this.getContent(event, className, i)}</div>
-
       );
     };
 
@@ -358,22 +334,7 @@ class App extends Component {
               </div>
             <ScrollToBottom className="conversation-view ">
 
-              <p  id={'chathistory'}>{chat}</p>
-              {/* {
-   "room___roomId": 12682,
-   "room___roomTypeId": 1001,
-   "room___hotelId": 3,
-   "room___booked": 0,
-   "hotel___hotelId": 3,
-   "hotel___name": "Joe Mcclure",
-   "hotel___city": "North Margaret",
-   "hotel___country": "Afghanistan",
-   "roomtype___roomTypeId": 1001,
-   "roomtype___roomType": "Deluxe",
-   "roomtype___price": 3750
- } */}
-              
-              {/*------------------------- loading indicator -----------*/}
+              <div  id={'chathistory'}>{chat}</div>
               <div className="ticontainer">
                 <div className="tiblock">
                   <div className="tidot"></div>
