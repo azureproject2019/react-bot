@@ -576,20 +576,12 @@ input[placeholder]{
   background-position: center;
   background-repeat: no-repeat;
 } */
-.modal-window {
+.modal-window:target {
   visibility: visible;
+  opacity: 1;
   pointer-events: auto;
-  position: fixed;
-  background-color: rgba(54, 54, 54, 0.25);
-  color:#333;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 999;
-  transition: all 0.3s;
 }
-.modal-window-div {
+.modal-window>div {
   width: 400px;
   position: absolute;
   top: 45%;
@@ -600,7 +592,18 @@ input[placeholder]{
   background: #ffffff;
 }
 .modal-window {
-
+  position: fixed;
+  background-color: rgba(54, 54, 54, 0.25);
+  color:#333;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 999;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
 }
 .modal-login>div{
   justify-content: center;
