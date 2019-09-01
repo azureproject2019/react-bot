@@ -15,6 +15,7 @@ class App extends Component {
 	    conversation: [],
       userId : new Date().getTime(),
       toEmailModalOpen : false,
+      toOpenChat : false,
       toEmailAddress : ''
     };
   }
@@ -175,6 +176,9 @@ class App extends Component {
     const handleEmailModalClick = (toEmailModalOpen) => {
       this.setState({toEmailModalOpen: toEmailModalOpen, toEmailAddress : ''});
     }
+    const handleOpenChat=(toOpenChat)=>{
+      this.setState({toOpenChat:toOpenChat})
+    }
     const handleToEmailAddressChange = event => {
       this.setState({ toEmailAddress: event.target.value });
     };
@@ -210,7 +214,15 @@ class App extends Component {
               <p onClick={this.editSlogan}>Hello</p>
           </div> */}
 
-        <div className="chat-button-theme-bubble">
+        <div className="chat-button-theme-bubble"   onClick={() =>{
+          if(!this.state.toOpenChat){
+           handleOpenChat(true);
+          }
+          else{
+            handleOpenChat(false);
+          }
+           }
+           } >
           <div className="button-greeting">
             <div className="button-greeting-close">
             <svg 
@@ -265,6 +277,8 @@ class App extends Component {
             </svg>
           </div>
         </div>
+
+        {this.state.toOpenChat ? (
           <div id="chatbot-open" className="chat-window chat-modal-window">
             <div className="chat-heading">
               <h1 className="animate-chat">React Chatbot</h1>
@@ -371,6 +385,9 @@ class App extends Component {
                   placeholder="Type your message and hit Enter to send"    />
             </form>
         </div>
+        ):(
+          ""
+        )}
 		</div>
     );
   }

@@ -43,6 +43,9 @@ html, body {
   width: 60px;
   height: 60px;
 }
+.chat-button-theme-bubble:hover{
+  background-color: #fff;
+}
 .button-greeting {
   position: absolute;
   bottom: calc(100% + 15px);
@@ -667,7 +670,7 @@ header {
   margin-bottom: 15px;
 }
 .interior{
-  display: inline-block;
+  /* display: inline-block; */
   float: right;
 }
 
