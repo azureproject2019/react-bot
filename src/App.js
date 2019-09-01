@@ -12,7 +12,7 @@ class App extends Component {
     super(props);
     this.state = {
       userMessage: '',
-	  conversation: [],
+	    conversation: [],
       userId : new Date().getTime(),
       toEmailModalOpen : false,
       toEmailAddress : ''
@@ -269,29 +269,47 @@ class App extends Component {
             <div className="chat-heading">
               <h1 className="animate-chat">React Chatbot</h1>
               <div className="interior">
+              <div>
                 {/* <button type="button" className="btn btn-primary"  data-toggle="modal" data-target="#exampleModalCenter">Login</button> */}
-                <img className="mail-box" onClick={() => this.sendEmail(this.state.conversation, this.publishSocket)} src={mailIcon} title="Send Conversation"/>
-                <a  href="#open-modal"><img className="mailId-box" src={mailIdIcon} title="Enter Your Mail"/></a>
-                <a  href="#open-jira-modal"><img className="mailId-box" src={jiraTicketIcon} title="Enter Your Mail"/></a>
+                {/* <img className="mail-box" onClick={() => this.sendEmail(this.state.conversation, this.publishSocket)} src={mailIcon} title="Send Conversation"/> */}
+                <a  href="#open-modal"><img className="mailId-box" src={mailIdIcon} title="Enter Your Mail"  onClick={() => handleEmailModalClick(true)} /></a>
+                <a  href="#open-jira-modal"><img className="mailId-box" src={jiraTicketIcon} title="Jira"/></a>
                 <a  href="#open-login-modal">Login</a>
               </div>
-                  
+              </div>
+              {this.state.toEmailModalOpen ? (  
               <div id="open-modal" className="modal-window">
                 <div>
                 <a href="#" title="Close" className="modal-close"><img className="close-icon" src={closeIcon}/></a>
                   <form className="form">
                   <div className="form-group">
                     <label for="exampleFormControlInput1">Email address</label>
-                    <input type="email" className="form-control" id="exampleFormControlInput1" placeholder="Your E-Mail Address"/>
+                    <input 
+                      type="email" 
+                      className="form-control" 
+                      id="exampleFormControlInput1" 
+                      placeholder="Your E-Mail Address"
+                      value={this.state.toEmailAddress}
+                      onInput={handleToEmailAddressChange}
+                      />
                   </div>
 	                  {/* <input type="email" class="form__field" placeholder="Your E-Mail Address" /> */}
                     <div className="d-flex justify-content-center">
-			              <button type="button" className="btn btn--primary btn--inside uppercase">Send</button>
-			              <button type="button" className="btn btn--danger btn--inside uppercase">Close</button>
+			              <button type="button"
+                      onClick={() => this.sendEmail(this.state.conversation, this.publishSocket, this.state.toEmailAddress)}
+                      className="btn btn--primary btn--inside uppercase">Send</button>
+			              <button type="button" onClick={() => handleEmailModalClick(false)} 
+                      className="btn btn--danger btn--inside uppercase"
+                    >
+                    Close
+                    </button>
                     </div>
                   </form>
                 </div>
               </div>
+              ):(
+                ""
+              )}
               
               <div id="open-jira-modal" className="modal-window">
                 <div>

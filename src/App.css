@@ -649,9 +649,10 @@ header {
   margin-left:auto !important;
   margin-right:auto !important;
   margin-bottom: 20px!important;
-  padding: 30px;
+  padding:0 20px;
 }
 .modal-header{
+  display: block;
   font-family: medium-marketing-display-font,Georgia,Cambria,"Times New Roman",Times,serif!important;
   font-style: normal!important;
   font-weight: 500!important;
