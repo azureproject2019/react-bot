@@ -5,6 +5,7 @@ import SwipeableViews from 'react-swipeable-views';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import FacebookLogin from 'react-facebook-login';
+import GoogleLogin from 'react-google-login';
 class App extends Component {
   
   constructor(props) {
@@ -225,8 +226,12 @@ class App extends Component {
           if(response.userID !== undefined) {
             this.setState({isAuthenticated: true});
           }
-      }
-
+    }
+    // const responseGoogle = (response) => {
+    //   if(response.userID !== undefined) {
+    //     this.setState({isAuthenticated: true});
+    //   }
+    // }
      const ChatBubble = (event, i, className) => {
       return (
           <div>{this.getContent(event, className, i)}</div>
@@ -254,7 +259,7 @@ class App extends Component {
               <p onClick={this.editSlogan}>Hello</p>
           </div> */}
 
-        <div className="chat-button-theme-bubble">
+        <div className="animate-chat chat-button-theme-bubble">
           <div className="button-greeting">
             <div className="button-greeting-close" >
             <svg
@@ -314,7 +319,7 @@ class App extends Component {
           {this.state.isAuthenticated  ? (
               <div>
                 { this.state.isChatModalOpened? (
-          <div id="chatbot-open" className="chat-window chat-modal-window">
+          <div id="chatbot-open" className=" slide-top chat-window chat-modal-window">
             <div className="chat-heading">
               <h1 className="animate-chat">React Chatbot</h1>
               <div className="interior">
@@ -437,8 +442,16 @@ class App extends Component {
                         appId="371181973549385" //APP ID NOT CREATED YET
                         fields="name,email,picture"
                         callback={responseFacebook}
-                        className="btn btn--primary--outline"
+                        className="btn--primary--outline"
                     />
+                    {/* <GoogleLogin
+                      clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+                      buttonText="Login"
+                      onSuccess={responseGoogle}
+                      onFailure={responseGoogle}
+                      cookiePolicy={'single_host_origin'}
+                    /> */}
+                    <button type="button" className="btn btn--primary--outline">LOGIN WITH GOOGLE</button>
                   </div>
                 </div>
               </div>

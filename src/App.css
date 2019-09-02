@@ -34,6 +34,10 @@ html, body {
   -webkit-transition: all .5s;
   transition: all .5s;
 }
+/* .chat-button>svg:hover{
+  background: rgb(12, 88, 195);
+  transition: 0.3s;
+} */
 .chat-icon{
   stroke: rgb(255, 255, 255);
 }
@@ -45,7 +49,7 @@ html, body {
   height: 60px;
 }
 .chat-button-theme-bubble:hover{
-  background-color: #fff;
+  /* background-color: #fff; */
 }
 .button-greeting {
   position: absolute;
@@ -198,12 +202,12 @@ h1,h2,h3,h4,h5,h6{
   transition: 0.2s;
   display: inline-block;
   min-height: 35px;
-  max-width:300px;
+  max-width:250px;
   padding: 8px 15px;
   background-color: #427fe1;
   color: white;
   border-radius:20px 20px 20px 3px;
-  font-size:1rem;
+  font-size:0.8rem;
   font-weight: 600 !important;
 }
 
@@ -314,7 +318,38 @@ input[placeholder]{
   animation-timing-function: ease-in-out;
   -webkit-animation-iteration-count: 1;
   animation-iteration-count: 1;
-  animation-delay: 1s;
+  animation-delay: 0.5s;
+}
+.slide-top {
+	-webkit-animation: slide-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  animation: slide-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  animation-duration: 0.2s;
+  animation-delay: 0ms;
+  animation-iteration-count: 1;
+}
+@-webkit-keyframes slide-top {
+  0% {
+    -webkit-transform: translateY(60);
+            transform: translateY(60);
+            opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateY(-10px);
+            transform: translateY(-10px);
+            opacity: 1;
+  }
+}
+@keyframes slide-top {
+  0% {
+    -webkit-transform: translateY(60);
+            transform: translateY(60);
+            opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateY(-10px);
+            transform: translateY(-10px);
+            opacity: 1;
+  }
 }
 
 /* Wobble Horizontal */
@@ -740,13 +775,33 @@ padding: 10px 36px;
   color: #333;
   border-radius: 5px;
   padding: 5px 36px;
-  width:90%;
+  width:80%;
   text-align: left;
   margin-bottom:15px;
+  font-weight: bold;
+  font-size: 13px
 }
 .btn--primary--outline:hover{
   border:1px solid rgba(108,117,125,1);
 }
+.kep-login-facebook.metro{
+  background: transparent;
+  border:1px solid rgba(108,117,125,.3);
+  color: #333;
+  border-radius: 5px !important;
+  padding: 5px 36px;
+  width:80%;
+  text-align: left;
+  margin-bottom:15px;
+  font-size: 13px;
+}
+.kep-login-facebook.metro:hover{
+  border:1px solid rgba(108,117,125,1);
+}
+/* .kep-login-facebook.metro::before{
+  max-height:10px;
+  content: url(./facebook.png);
+} */
 .btn-icon{
   width: 20px;
   vertical-align: bottom;
