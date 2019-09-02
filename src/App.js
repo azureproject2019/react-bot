@@ -223,7 +223,7 @@ class App extends Component {
     }
     const responseFacebook = (response) => {
           if(response.userID !== undefined) {
-            this.setState({isAuthenticated: true, isChatModalOpened:true});
+            this.setState({isAuthenticated: true});
           }
       }
 
