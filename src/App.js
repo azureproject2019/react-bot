@@ -4,7 +4,8 @@ import SwipeableViews from 'react-swipeable-views';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import FacebookLogin from 'react-facebook-login';
+// import FacebookLogin from 'react-facebook-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import GoogleLogin from 'react-google-login';
 class App extends Component {
   
@@ -227,11 +228,11 @@ class App extends Component {
             this.setState({isAuthenticated: true});
           }
     }
-    // const responseGoogle = (response) => {
-    //   if(response.userID !== undefined) {
-    //     this.setState({isAuthenticated: true});
-    //   }
-    // }
+    const responseGoogle = (response) => {
+      if(response.userID !== undefined) {
+        this.setState({isAuthenticated: true});
+      }
+    }
      const ChatBubble = (event, i, className) => {
       return (
           <div>{this.getContent(event, className, i)}</div>
@@ -439,18 +440,23 @@ class App extends Component {
                     <p>Sign in to start the chat application. Chat application will allow to send the chat history to email and create Jira issue. </p>
                     <FacebookLogin
                         appId="371181973549385" //APP ID NOT CREATED YET
-                        fields="name,email,picture"
+                        // fields="name,email,picture"
                         callback={responseFacebook}
-                        className="btn--primary--outline"
+                        render={renderProps => (
+                          <button className="btn--primary--outline uppercase" onClick={renderProps.onClick}  disabled={renderProps.disabled}><img src={FacebookIcon} className="btn-icon"/>Login with facebook</button>
+                        )}
                     />
-                    {/* <GoogleLogin
-                      clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-                      buttonText="Login"
-                      onSuccess={responseGoogle}
-                      onFailure={responseGoogle}
-                      cookiePolicy={'single_host_origin'}
-                    /> */}
-                    <button type="button" className="btn btn--primary--outline">LOGIN WITH GOOGLE</button>
+                   <GoogleLogin
+                     clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+                     render={renderProps => (
+                       <button className="btn--primary--outline uppercase" onClick={renderProps.onClick} disabled={renderProps.disabled}><img src={googleIcon} className="btn-icon"/>Login with Google</button>
+                     )}
+                     buttonText="Login"
+                     onSuccess={responseGoogle}
+                     onFailure={responseGoogle}
+                     cookiePolicy={'single_host_origin'}
+                   />
+                    {/* <button type="button" className="btn btn--primary--outline">LOGIN WITH GOOGLE</button> */}
                   </div>
                 </div>
               </div>
