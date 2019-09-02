@@ -432,7 +432,7 @@ class App extends Component {
                 <div >
                   <div className="modal-text">
                     <h3 className="modal-header">Welcome Back</h3>
-                    <p>Sign in to get personalized story recommendations, follow authors and topics you love, and interact with stories.</p>
+                    <p>Sign in to start the chat application. Chat application will allow to send the chat history to email and create Jira issue. </p>
                     <FacebookLogin
                         appId="371181973549385" //APP ID NOT CREATED YET
                         fields="name,email,picture"
