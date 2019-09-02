@@ -251,6 +251,7 @@ class App extends Component {
     const googleIcon=require('./search.png');
     const twitterIcon=require('./twitter.png');
     const emailIcon=require('./email.png');
+    const convIcon=require('./conversation.png');
 
     return (
         <div id="chat">
@@ -275,12 +276,10 @@ class App extends Component {
               </path>
             </svg>
             </div>
-            {/* <div className="button-greeting-content-wrapper">
-              <div className="button-greeting-content">Hey I'm a ChatBot!</div>
-            </div> */}
           </div>
           <div className="chat-button"  >
-            <svg xmlns="http://www.w3.org/2000/svg"
+          <img className="chat-icon" src={convIcon} onClick={() => handleChatModalClick(this.state.isChatModalOpened)}/>
+            {/* <svg xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20" className="chat-icon"
                  onClick={() => handleChatModalClick(this.state.isChatModalOpened)}
             >
@@ -313,7 +312,7 @@ class App extends Component {
               y2="12.28" 
               >
             </line>
-            </svg>
+            </svg> */}
           </div>
         </div>
           {this.state.isAuthenticated  ? (
@@ -433,7 +432,7 @@ class App extends Component {
                     ""
                 )}
               </div>
-          ):(  <div id="open-login-modal" className="modal-login  modal-login-window d-flex justify-content-center">
+          ):(  <div id="open-login-modal" className="slide-fwd-top modal-login  modal-login-window d-flex justify-content-center">
                 <div >
                   <div className="modal-text">
                     <h3 className="modal-header">Welcome Back</h3>
