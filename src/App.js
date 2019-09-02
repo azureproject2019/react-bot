@@ -312,8 +312,8 @@ class App extends Component {
 			              <button type="button"
                       onClick={() => this.sendEmail(this.state.conversation, this.publishSocket, this.state.toEmailAddress)}
                       className="btn btn--primary btn--inside uppercase">Send</button>
-			              <button type="button" onClick={() => handleEmailModalClick(false)} 
-                      className="btn btn--danger btn--inside uppercase"
+			              <button href="#" type="button" onClick={() => handleEmailModalClick(false)} 
+                      className="btn btn--danger btn--inside uppercase "
                     >
                     Close
                     </button>
@@ -345,7 +345,7 @@ class App extends Component {
                   </div>
                   <div className="d-flex justify-content-center">
 			              <button type="button" class="btn btn--primary btn--inside uppercase">Ok</button>
-			              <button type="button" class="btn btn--danger btn--inside uppercase">Close</button>
+			              <button href="#" type="button" class="btn btn--danger btn--inside uppercase">Close</button>
                   </div>
                   </form>
                 </div>
