@@ -229,7 +229,7 @@ class App extends Component {
           }
     }
     const responseGoogle = (response) => {
-      if(response.userID !== undefined) {
+      if(response.googleId !== undefined) {
         this.setState({isAuthenticated: true});
       }
     }
@@ -447,7 +447,7 @@ class App extends Component {
                         )}
                     />
                    <GoogleLogin
-                     clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+                     clientId="830450317717-2m954v3anhm9uv2meu787cg5i7ih0bs3.apps.googleusercontent.com"
                      render={renderProps => (
                        <button className="btn--primary--outline uppercase" onClick={renderProps.onClick} disabled={renderProps.disabled}><img src={googleIcon} className="btn-icon"/>Login with Google</button>
                      )}
