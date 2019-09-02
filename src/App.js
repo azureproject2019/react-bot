@@ -1,22 +1,39 @@
 import React, { Component } from 'react';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import SwipeableViews from 'react-swipeable-views';
-// import Container from 'react-bootstrap/Container';
-// import Row from 'react-bootstrap/Row';
-import Form from 'react-bootstrap/Form';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import FacebookLogin from 'react-facebook-login';
 class App extends Component {
   
   constructor(props) {
     super(props);
     this.state = {
       userMessage: '',
-	    conversation: [],
+	  conversation: [],
       userId : new Date().getTime(),
       toEmailModalOpen : false,
-      toOpenChat : false,
-      toEmailAddress : ''
+      isJiraModalOpened : false,
+      isChatModalOpened : false,
+      toEmailAddress : '',
+      isAuthenticated : false,
+      jira : [{
+        itemType:"",
+        itemValue:""
+      },{
+        itemType:"Task",
+        itemValue:"Task"
+      },{
+        itemType:"Story",
+        itemValue:"Story"
+      },{
+        itemType:"Bug",
+        itemValue:"Bug"
+      }],
+      selectedItemType:"",
+      summary:"",
+      description:""
     };
   }
 
@@ -101,6 +118,7 @@ class App extends Component {
     this.setState({ userMessage: event.target.value });
   };
 
+
   handleSubmit = event => {
     event.preventDefault();
     if (!this.state.userMessage.trim()) return;
@@ -166,6 +184,12 @@ class App extends Component {
     this.setState({toEmailModalOpen: false});
     publisher.send(JSON.stringify(message));
   }
+
+  createJira(itemType,itemSummary,itemDescription,publisher) {
+    let message = { channelType: 'jira', itemType: itemType, itemSummary: itemSummary, itemDescription };
+    this.setState({isJiraModalOpened: false});
+    publisher.send(JSON.stringify(message));
+  }
   // editSlogan(){
   //   return (
   //       // <input type="text" value={this.props.slogan} onChange={this.saveEdit}/>
@@ -176,24 +200,40 @@ class App extends Component {
     const handleEmailModalClick = (toEmailModalOpen) => {
       this.setState({toEmailModalOpen: toEmailModalOpen, toEmailAddress : ''});
     }
-    const handleOpenChat=(toOpenChat)=>{
-      this.setState({toOpenChat:toOpenChat})
+    const handleJiraModalClick = (isJiraModalOpened) => {
+      this.setState({isJiraModalOpened: isJiraModalOpened});
     }
+    const handleChatModalClick = (isChatModalOpened) => {
+      if(this.state.isAuthenticated){
+        this.setState({isChatModalOpened: !isChatModalOpened});
+      }
+    }
+
+
     const handleToEmailAddressChange = event => {
       this.setState({ toEmailAddress: event.target.value });
     };
+
+    const handleJiraDescriptionChange = event => {
+      this.setState({description: event.target.value});
+    }
+
+    const handleJiraSummaryChange = event => {
+      this.setState({summary: event.target.value});
+    }
     const responseFacebook = (response) => {
-          console.log(response);
+          if(response.userID !== undefined) {
+            this.setState({isAuthenticated: true});
+          }
       }
 
-      const responseGoogle = (response) => {
-          console.log(response);
-      }
-    const ChatBubble = (event, i, className) => {
+     const ChatBubble = (event, i, className) => {
       return (
           <div>{this.getContent(event, className, i)}</div>
       );
     };
+
+
 
     const chat = this.state.conversation.map((e, index) =>
       ChatBubble(e, index, e.user)
@@ -214,19 +254,12 @@ class App extends Component {
               <p onClick={this.editSlogan}>Hello</p>
           </div> */}
 
-        <div className="chat-button-theme-bubble"   onClick={() =>{
-          if(!this.state.toOpenChat){
-           handleOpenChat(true);
-          }
-          else{
-            handleOpenChat(false);
-          }
-           }
-           } >
+        <div className="chat-button-theme-bubble">
           <div className="button-greeting">
-            <div className="button-greeting-close">
-            <svg 
-              viewBox="0 0 24 24" 
+            <div className="button-greeting-close" >
+            <svg
+
+              viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg">
               <path 
                 d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
@@ -241,9 +274,10 @@ class App extends Component {
               <div className="button-greeting-content">Hey I'm a ChatBot!</div>
             </div> */}
           </div>
-          <div className="chat-button">
-            <svg xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 20 20" className="chat-icon" 
+          <div className="chat-button"  >
+            <svg xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20" className="chat-icon"
+                 onClick={() => handleChatModalClick(this.state.isChatModalOpened)}
             >
             <path
               className="chat-path" 
@@ -277,8 +311,9 @@ class App extends Component {
             </svg>
           </div>
         </div>
-
-        {this.state.toOpenChat ? (
+          {this.state.isAuthenticated  ? (
+              <div>
+                { this.state.isChatModalOpened? (
           <div id="chatbot-open" className="chat-window chat-modal-window">
             <div className="chat-heading">
               <h1 className="animate-chat">React Chatbot</h1>
@@ -287,8 +322,7 @@ class App extends Component {
                 {/* <button type="button" className="btn btn-primary"  data-toggle="modal" data-target="#exampleModalCenter">Login</button> */}
                 {/* <img className="mail-box" onClick={() => this.sendEmail(this.state.conversation, this.publishSocket)} src={mailIcon} title="Send Conversation"/> */}
                 <a  href="#open-modal"><img className="mailId-box" src={mailIdIcon} title="Enter Your Mail"  onClick={() => handleEmailModalClick(true)} /></a>
-                <a  href="#open-jira-modal"><img className="mailId-box" src={jiraTicketIcon} title="Jira"/></a>
-                <a  href="#open-login-modal">Login</a>
+                <a  href="#open-jira-modal"><img className="mailId-box" src={jiraTicketIcon} onClick={() => handleJiraModalClick(true)}  title="Jira"/></a>
               </div>
               </div>
               {this.state.toEmailModalOpen ? (  
@@ -324,70 +358,92 @@ class App extends Component {
               ):(
                 ""
               )}
-              
+              {this.state.isJiraModalOpened ? (
               <div id="open-jira-modal" className="modal-window">
                 <div>
                 <a href="#" title="Close" className="modal-close"><img className="close-icon" src={closeIcon}/></a>
                 <form className="form">
                   <div className="form-group">
                     <label for="exampleFormControlSelect1">Issue Type</label>
-                    <select className="form-control" id="exampleFormControlSelect1">
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                      <option>4</option>
-                      <option>5</option>
+                    <select className="form-control" id="exampleFormControlSelect1" value={this.state.selectedItemType}
+                            onChange={
+                              (e) => this.setState({selectedItemType: e.target.value})
+                            }>
+                      {this.state.jira.map((itemType) => <option key={itemType.itemValue} value={itemType.itemValue}>{itemType.itemValue}</option>)}
                     </select>
+
+                    {/*<select className="form-control" id="exampleFormControlSelect1">
+                      <option>Story</option>
+                      <option>Task</option>
+                      <option>Epic</option>
+                      <option >Bug</option>
+                    </select>*/}
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="exampleFormControlTextarea2">Summary</label>
+                    <textarea className="form-control" id="exampleFormControlTextarea2" value={this.state.summary}
+                              onInput={handleJiraSummaryChange}/>
                   </div>
                   <div className="form-group">
                     <label for="exampleFormControlTextarea1">Description</label>
-                    <textarea className="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                    <textarea className="form-control" id="exampleFormControlTextarea1" value={this.state.description}
+                              onInput={handleJiraDescriptionChange}/>
                   </div>
+
                   <div className="d-flex justify-content-center">
-			              <button type="button" class="btn btn--primary btn--inside uppercase">Ok</button>
-			              <button href="#" type="button" class="btn btn--danger btn--inside uppercase">Close</button>
+			              <button onClick={() => this.createJira(this.state.selectedItemType, this.state.summary, this.state.description, this.publishSocket)}
+                                  type="button" className="btn btn--primary btn--inside uppercase">Create</button>
+			              <button href="#" type="button" className="btn btn--danger btn--inside uppercase" onClick={() => handleJiraModalClick(false)} >Close</button>
                   </div>
                   </form>
                 </div>
               </div>
-              <div id="open-login-modal" className="modal-login modal-window d-flex justify-content-center">
-               <div >
-                <a href="#" title="Close" className="modal-close"><img className="close-icon" src={closeIcon}/></a>
-                <div className="modal-text">
-                <h3 className="modal-header">Welcome Back</h3>
-                <p>Sign in to get personalized story recommendations, follow authors and topics you love, and interact with stories.</p>
-                <button className="btn btn--primary--outline"><img className="btn-icon" src={FacebookIcon} />Log in with Facebook</button>
-                <button className="btn btn--primary--outline"><img className="btn-icon" src={googleIcon} />Log in with Google</button>               
-                <button className="btn btn--primary--outline"><img className="btn-icon" src={twitterIcon} />Log in with Twitter</button> 
-                <button className="btn btn--primary--outline"><img className="btn-icon" src={emailIcon} />Log in with Mail</button>               
-                </div>
-               </div>
+              ):(
+                  ""
+              )}
               </div>
-              </div>
-            <ScrollToBottom className="conversation-view ">
 
-              <div  id={'chathistory'}>{chat}</div>
-              <div className="ticontainer">
-                <div className="tiblock">
-                  <div className="tidot"></div>
-                  <div className="tidot"></div>
-                  <div className="tidot"></div>
+                <ScrollToBottom className="conversation-view ">
+
+                  <div  id={'chathistory'}>{chat}</div>
+                  <div className="ticontainer">
+                    <div className="tiblock">
+                      <div className="tidot"></div>
+                      <div className="tidot"></div>
+                      <div className="tidot"></div>
+                    </div>
+                  </div>
+                  </ScrollToBottom>
+                  <form onSubmit={this.handleSubmit}>
+                  <input
+                      value={this.state.userMessage}
+                      onInput={this.handleChange}
+                      className="css-input"
+                      type="text"
+                      autoFocus
+                      placeholder="Type your message and hit Enter to send"    />
+                </form>
+            </div>
+                ):(
+                    ""
+                )}
+              </div>
+          ):(  <div id="open-login-modal" className="modal-login  modal-login-window d-flex justify-content-center">
+                <div >
+                  <div className="modal-text">
+                    <h3 className="modal-header">Welcome Back</h3>
+                    <p>Sign in to start the chat application. Chat application will allow to send the chat history to email and create Jira issue. </p>
+                    <FacebookLogin
+                        appId="371181973549385" //APP ID NOT CREATED YET
+                        fields="name,email,picture"
+                        callback={responseFacebook}
+                        className="btn btn--primary--outline"
+                    />
+                  </div>
                 </div>
-              </div> 
-			  </ScrollToBottom> 
-              <form onSubmit={this.handleSubmit}>
-              <input
-                  value={this.state.userMessage}
-                  onInput={this.handleChange}
-                  className="css-input"
-                  type="text"
-                  autoFocus
-                  placeholder="Type your message and hit Enter to send"    />
-            </form>
-        </div>
-        ):(
-          ""
-        )}
+              </div>
+          )}
+
 		</div>
     );
   }

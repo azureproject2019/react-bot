@@ -580,6 +580,23 @@ input[placeholder]{
   background-position: center;
   background-repeat: no-repeat;
 } */
+modal-login {
+  justify-content: center;
+  padding: 20px;
+  visibility: visible;
+  pointer-events: auto;
+}
+.modal-login-window {
+  width: 400px;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  max-height: 90vh;
+  transform: translate(-50%, -50%);
+  padding: 1em;
+  background: #ffffff;
+}
+
 .modal-window:target {
   visibility: visible;
   opacity: 1;
@@ -609,10 +626,7 @@ input[placeholder]{
   pointer-events: none;
   transition: all 0.3s;
 }
-.modal-login>div{
-  justify-content: center;
-  padding: 20px;
-}
+
 /* .chat-modal-window{
   visibility: hidden;
   transition: all 0.3s;
