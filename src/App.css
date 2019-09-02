@@ -58,6 +58,8 @@ html, body {
 }
 .chat-button-theme-bubble:hover{
   /* background-color: #fff; */
+  transition: 0.3s;
+  transform: scale(1.1);
 }
 .button-greeting {
   position: absolute;
