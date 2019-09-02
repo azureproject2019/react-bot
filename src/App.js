@@ -261,9 +261,9 @@ class App extends Component {
               <p onClick={this.editSlogan}>Hello</p>
           </div> */}
 
-        <div className="animate-chat chat-button-theme-bubble">
+        <div className="animate-chat chat-button-theme-bubble"   title="Click to Talk">
           <div className="button-greeting">
-            <div className="button-greeting-close" >
+            <div className="button-greeting-close">
             <svg
 
               viewBox="0 0 24 24"
@@ -278,7 +278,7 @@ class App extends Component {
             </svg>
             </div>
           </div>
-          <div className="chat-button"  >
+          <div className="chat-button pulse"  >
           <img className="chat-icon" src={convIcon} onClick={() => handleChatModalClick(this.state.isChatModalOpened)}/>
             {/* <svg xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20" className="chat-icon"
